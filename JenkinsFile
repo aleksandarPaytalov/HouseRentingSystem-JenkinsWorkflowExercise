@@ -1,0 +1,55 @@
+pipeline {
+    agent any
+    
+    tools {
+        msbuild 'MsBuild-v1'
+    }
+    
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+        
+        stage('Restore') {
+            steps {
+                echo 'Restoring NuGet packages...'
+                bat 'nuget restore HouseRentingSystem.sln'
+            }
+        }
+        
+        stage('Build') {
+            steps {
+                echo 'Building the project...'
+                bat 'MSBuild.exe HouseRentingSystem.sln /p:Configuration=Release /p:Platform="Any CPU" /m'
+            }
+        }
+        
+        stage('Test') {
+            steps {
+                echo 'Running tests...'
+                bat 'vstest.console.exe **\\bin\\Release\\**\\*Test*.dll'
+            }
+            post {
+                always {
+                    // Publish test results if using MSTest, NUnit, or xUnit
+                    publishTestResults testResultsFormat: 'VSTest', testResultsFiles: '**/*.trx'
+                }
+            }
+        }
+    }
+    
+    post {
+        always {
+            // Clean workspace after build
+            cleanWs()
+        }
+        success {
+            echo 'Build completed successfully!'
+        }
+        failure {
+            echo 'Build failed!'
+        }
+    }
+}
