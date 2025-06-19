@@ -15,7 +15,7 @@ pipeline {
         stage('Restore') {
             steps {
                 echo 'Restoring NuGet packages...'
-                bat 'nuget restore HouseRentingSystem.sln'
+                bat 'dotnet restore HouseRentingSystem.sln'
             }
         }
         
