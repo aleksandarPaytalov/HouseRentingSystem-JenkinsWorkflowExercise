@@ -22,11 +22,11 @@ pipeline {
         
         stage('Test running') {
             steps {
-                bat 'dotnet test HouseRentingSystem.sln --logger "trx;LogFilePath=results.trx" --results-directory TestResults'
+                bat 'dotnet test HouseRentingSystem.sln --logger "trx;LogFileName=results.trx" --results-directory TestResults'
             }
             post {
                 always {
-                    archiveArtifacts artifacts: 'TestResults/*.trx', fingerprint: true
+                    archiveArtifacts artifacts: 'TestResults/*.trx', allowEmptyArchive: true
                 }
             }
         }
