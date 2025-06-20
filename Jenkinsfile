@@ -8,23 +8,20 @@ pipeline {
             }
         }
         
-        stage('Restore') {
+        stage('Restore application') {
             steps {
-                echo 'Restoring NuGet packages...'
                 bat 'dotnet restore'
             }
         }
         
-        stage('Build') {
+        stage('Build project') {
             steps {
-                echo 'Building the project...'
                 bat 'dotnet build'
             }
         }
         
-        stage('Test') {
+        stage('Test running') {
             steps {
-                echo 'Running tests...'
                 bat 'dotnet test'
             }
             post {
