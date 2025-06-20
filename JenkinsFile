@@ -1,12 +1,8 @@
 pipeline {
     agent any
     
-    tools {
-        msbuild 'MsBuild-v1'
-    }
-    
     stages {
-        stage('Checkout') {
+        stage('Checkout the repository') {
             steps {
                 checkout scm
             }
@@ -15,21 +11,21 @@ pipeline {
         stage('Restore') {
             steps {
                 echo 'Restoring NuGet packages...'
-                bat 'nuget restore HouseRentingSystem.sln'
+                bat 'dotnet restore'
             }
         }
         
         stage('Build') {
             steps {
                 echo 'Building the project...'
-                bat 'MSBuild.exe HouseRentingSystem.sln /p:Configuration=Release /p:Platform="Any CPU" /m'
+                bat 'dotnet build'
             }
         }
         
         stage('Test') {
             steps {
                 echo 'Running tests...'
-                bat 'vstest.console.exe **\\bin\\Release\\**\\*Test*.dll'
+                bat 'dotnet test'
             }
             post {
                 always {
