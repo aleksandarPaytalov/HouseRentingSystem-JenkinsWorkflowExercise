@@ -23,10 +23,11 @@ pipeline {
         stage('Test running') {
             steps {
                 bat 'dotnet test HouseRentingSystem.sln --logger "trx;LogFileName=results.trx" --results-directory TestResults'
+                bat 'copy TestResults\\results.trx TestResults\\results.xml'
             }
             post {
                 always {
-                    archiveArtifacts artifacts: 'TestResults/*.trx', allowEmptyArchive: true
+                    archiveArtifacts artifacts: 'TestResults/results.xml', allowEmptyArchive: true
                 }
             }
         }
@@ -34,6 +35,7 @@ pipeline {
     
     post {
         always {
+            // Clean workspace after build
             cleanWs()
         }
         success {
