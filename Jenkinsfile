@@ -22,12 +22,11 @@ pipeline {
         
         stage('Test running') {
             steps {
-                bat 'dotnet test'
+                bat 'dotnet test HouseRentingSystem.sln --logger "trx;LogFilePath=results.trx" --results-directory TestResults'
             }
             post {
                 always {
-                    // Publish test results if using MSTest, NUnit, or xUnit
-                    publishTestResults testResultsFormat: 'VSTest', testResultsFiles: '**/*.trx'
+                    archiveArtifacts artifacts: 'TestResults/*.trx', fingerprint: true
                 }
             }
         }
